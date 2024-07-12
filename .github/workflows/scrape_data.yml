@@ -39,11 +39,10 @@ jobs:
           # Determine latest ChromeDriver version
           LATEST_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 
-         # Download ChromeDriver
+          # Download ChromeDriver (adjust version as needed)
           curl -o /tmp/chromedriver_linux64.zip "https://storage.googleapis.com/chrome-for-testing-public/126.0.6478.126/linux64/chromedriver-linux64.zip"
           sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
-
 
       - name: Run scraper
         run: |
@@ -51,8 +50,8 @@ jobs:
 
       - name: Commit and push results
         run: |
-          git config --global user.name 'littletricksmedia'
-          git config --global user.email 'ravi.littletricksmedia@gmail.com'
+          git config --local user.name 'littletricksmedia'
+          git config --local user.email 'ravi.littletricksmedia@gmail.com'
           git add necklaces_pendant_scraped_data.csv  # Adjust file name as needed
           git commit -m 'Update scraped data'
           git push
