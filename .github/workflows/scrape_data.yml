@@ -40,7 +40,7 @@ jobs:
           LATEST_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 
           # Download Chromedriver
-          curl -o /tmp/chromedriver_linux64.zip "https://chromedriver.storage.googleapis.com/126.0.6478.126/chromedriver_linux64.zip"
+          curl -o /tmp/chromedriver_linux64.zip "https://storage.googleapis.com/chrome-for-testing-public/126.0.6478.126/linux64/chromedriver-linux64.zip"
           sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
 
