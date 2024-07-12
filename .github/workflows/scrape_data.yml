@@ -40,9 +40,9 @@ jobs:
           LATEST_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 
          # Download ChromeDriver
-          curl -o /tmp/chromedriver_linux64.zip "https://srv675-files.hstgr.io/67dd8a1affdf97ff/api/raw/public_html/chromedriver?auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJsb2NhbGUiOiJlbl9HQiIsInZpZXdNb2RlIjoibGlzdCIsInNpbmdsZUNsaWNrIjpmYWxzZSwicGVybSI6eyJhZG1pbiI6ZmFsc2UsImV4ZWN1dGUiOmZhbHNlLCJjcmVhdGUiOnRydWUsInJlbmFtZSI6dHJ1ZSwibW9kaWZ5Ijp0cnVlLCJkZWxldGUiOnRydWUsInNoYXJlIjpmYWxzZSwiZG93bmxvYWQiOnRydWV9LCJjb21tYW5kcyI6W10sImxvY2tQYXNzd29yZCI6dHJ1ZSwiaGlkZURvdGZpbGVzIjpmYWxzZSwiZGF0ZUZvcm1hdCI6ZmFsc2V9LCJpc3MiOiJGaWxlIEJyb3dzZXIiLCJleHAiOjE3MjA3NzU0NzUsImlhdCI6MTcyMDc2ODI3NX0.qUDa2KWVgRXgjhrIEWbeZwo3o498Kr6uJ5nDONRZ3W0&"
-         # sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
-         # sudo chmod +x /usr/local/bin/chromedriver
+          curl -o /tmp/chromedriver_linux64.zip "https://storage.googleapis.com/chrome-for-testing-public/126.0.6478.126/linux64/chromedriver-linux64.zip"
+          sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
 
 
       - name: Run scraper
