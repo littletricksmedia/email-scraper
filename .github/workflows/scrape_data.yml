@@ -45,7 +45,7 @@ jobs:
 
       - name: Run scraper
         run: |
-          python etsy_scraper.py
+          xvfb-run --auto-servernum -- python etsy_scraper.py
 
       - name: Commit and push results
         run: |
