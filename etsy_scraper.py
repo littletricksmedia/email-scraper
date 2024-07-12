@@ -7,7 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import re
-import os
 
 # Function to extract email from source code
 def extract_email_from_source(source):
@@ -32,22 +31,15 @@ def extract_additional_details_from_source(source):
 chrome_options = Options()
 chrome_options.add_argument("--start-maximized")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-
-# Path to your ChromeDriver
-chromedriver_path = r'C:\Program Files\Google\Chrome\Application\chromedriver.exe'  # Adjust the path to your ChromeDriver
-
-# Verify that the path exists
-if not os.path.isfile(chromedriver_path):
-    raise FileNotFoundError(f"ChromeDriver not found at {chromedriver_path}")
-
-# Set up ChromeDriver service
-service = Service(chromedriver_path)
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-dev-shm-usage')
 
 # Initialize the Chrome driver
-driver = webdriver.Chrome(service=service, options=chrome_options)
+driver = webdriver.Chrome(options=chrome_options)
 
 # Read Etsy listing URLs from CSV file
-csv_file = 'necklaces_pendant_url.csv' 
+csv_file = 'jewellery-earring-url-1.csv' 
 df = pd.read_csv(csv_file)
 
 # Check the column name and ensure it matches
@@ -108,5 +100,4 @@ driver.quit()
 output_df = pd.DataFrame(scraped_data)
 output_df.to_csv('necklaces_pendant_scraped_data.csv', index=False)
 
-print("Scraping complete. Data saved to scraped_data.csv")
- 
+print("Scraping complete. Data saved to necklaces_pendant_scraped_data.csv")
