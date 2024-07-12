@@ -22,56 +22,25 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
-
-      - name: Install Google Chrome
-        run: |
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          google-chrome --version
-
-      - name: Determine Chrome and ChromeDriver versions
-        run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
-          echo "Installed Chrome version: $CHROME_VERSION"
-          CHROME_MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1)
-          echo "Chrome major version: $CHROME_MAJOR_VERSION"
-          retry_count=3
-          while [ $retry_count -gt 0 ]; do
-            CHROMEDRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR_VERSION)
-            if [ $? -eq 0 ]; then
-              echo "Latest ChromeDriver version: $CHROMEDRIVER_VERSION"
-              break
-            else
-              echo "Failed to fetch ChromeDriver version. Retrying..."
-              retry_count=$((retry_count - 1))
-              sleep 5  # Wait before retrying
-            fi
-          done
-          if [ $retry_count -eq 0 ]; then
-            echo "Failed to fetch ChromeDriver version after multiple retries."
-            exit 1
-          fi
-
-      - name: Download and install ChromeDriver
-        run: |
-          wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/chromedriver
-          chromedriver --version
-
-      - name: Install Python packages
-        run: |
           python -m pip install --upgrade pip
           pip install pandas selenium
 
+      - name: Install Chrome and ChromeDriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+          # Install specific version of Chrome (e.g., 114.0.5735.90)
+          wget https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.90-1_amd64.deb
+          sudo dpkg -i google-chrome-stable_114.0.5735.90-1_amd64.deb || sudo apt-get -f install -y
+          # Install matching ChromeDriver
+          wget -N https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
+
       - name: Run scraper
         run: |
-          xvfb-run --auto-servernum -- python etsy_scraper.py
+          python etsy_scraper.py
 
       - name: Commit and push results
         run: |
