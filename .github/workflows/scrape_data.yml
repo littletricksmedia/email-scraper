@@ -30,19 +30,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
 
-          # Download and install Google Chrome
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb
-          sudo apt-get -f install -y
+          # Install the latest version of Google Chrome
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
-          # Determine the latest compatible version of ChromeDriver
-          LATEST_CHROMEDRIVER=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-          echo "Latest ChromeDriver version: $LATEST_CHROMEDRIVER"
+          # Determine latest ChromeDriver version
+          LATEST_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 
-          # Download and install matching ChromeDriver
-          wget -N https://chromedriver.storage.googleapis.com/$LATEST_CHROMEDRIVER/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
+          # Download and install ChromeDriver
+          wget -q --continue -P /tmp/ "https://chromedriver.storage.googleapis.com/$LATEST_VERSION/chromedriver_linux64.zip"
+          sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
 
       - name: Run scraper
