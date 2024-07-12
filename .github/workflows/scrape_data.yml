@@ -40,13 +40,10 @@ jobs:
           LATEST_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 
           # Download Chromedriver
-          wget -q --continue -P /tmp/ "https://chromedriver.storage.googleapis.com/126.0.6478.126/chromedriver_linux64.zip"
+          curl -o /tmp/chromedriver_linux64.zip "https://chromedriver.storage.googleapis.com/126.0.6478.126/chromedriver_linux64.zip"
+          sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
 
-          # Unzip and install Chromedriver
-           sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
-
-         # Provide executable permissions
-           sudo chmod +x /usr/local/bin/chromedriver
 
       - name: Run scraper
         run: |
