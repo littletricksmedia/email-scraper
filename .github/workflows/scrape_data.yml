@@ -1,20 +1,38 @@
-name: Etsy Scraper
+name: Scrape Data
 
 on:
   push:
     branches:
-      - main  # Replace with your main branch name
+      - main
+  schedule:
+    - cron: '0 0 * * *'  # This runs the workflow daily at midnight (adjust as needed)
 
 jobs:
-  build:
+  scrape:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Chrome and ChromeDriver
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # Adjust as needed
+
+      - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
+          pip install pandas selenium
+
+      - name: Install Chrome and ChromeDriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+
+          # Install the latest version of Google Chrome
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
@@ -23,21 +41,19 @@ jobs:
 
           # Download and install ChromeDriver
           wget -q --continue -P /tmp/ "https://chromedriver.storage.googleapis.com/$LATEST_VERSION/chromedriver_linux64.zip"
-          unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
+          sudo unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'  # Replace with your Python version (e.g., 3.8)
-
-      - name: Install dependencies
+      - name: Run scraper
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Replace with your requirements file if needed
+          python etsy_scraper.py
 
-      - name: Run Etsy Scraper
+      - name: Commit and push results
         run: |
-          python etsy_scraper.py  # Replace with your script name
-
-      # Add more steps as needed, such as saving outputs or artifacts
+          git config --global user.name 'littletricksmedia'
+          git config --global user.email 'ravi.littletricksmedia@gmail.com'
+          git add necklaces_pendant_scraped_data.csv  # Adjust file name as needed
+          git commit -m 'Update scraped data'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
